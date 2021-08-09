@@ -5,6 +5,8 @@ plugins {
 }
 
 repositories {
+    maven { url 'https://jitpack.io' }
+    maven {    url "https://repo.osgeo.org/repository/release/"}
     mavenCentral()
 }
 
@@ -12,9 +14,12 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile('com.fasterxml.jackson.core:jackson-databind:2.9.4')
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    testCompile("junit:junit")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    implementation 'com.github.kungfoo:geohash-java:1.4.0'
+    implementation group: 'org.geotools', name: 'gt-shapefile', version: '25.0'
+    implementation('com.opencsv:opencsv:5.5.1')
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation('com.fasterxml.jackson.core:jackson-databind:2.9.4')
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    testImplementation("junit:junit")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

@@ -1,4 +1,4 @@
-package hello.config;
+package mobileFoodPermit.config;
 
 import org.springframework.context.annotation.Configuration;
 
