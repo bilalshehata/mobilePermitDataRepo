@@ -13,9 +13,9 @@ import java.io.IOException;
 public class Config {
 
     /**
-     * Bean - to only make one
      *
-     * @return
+     * Using bean annotation to always return same one.
+     * @return mobile food permit storage.
      * @throws IOException
      */
     @Bean
@@ -24,6 +24,12 @@ public class Config {
         return StorageFactory.fromCSV(csvLocation);
     }
 
+    /**
+     * handler to handle requests from the API controller.
+     * Using bean annotation to always return same one.
+     * @return
+     * @throws IOException
+     */
     @Bean
     public MobileFoodPermitStorageHandler getMobileFoodPermitStorageHandler(MobileFoodPermitStorage storage,
                                                                             @Value("${max_autofill}") String maxAutofill) throws IOException {

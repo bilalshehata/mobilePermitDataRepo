@@ -1,15 +1,17 @@
 package mobilefoodpermit.storage;
 
 import mobilefoodpermit.models.MobileFoodPermit;
+import mobilefoodpermit.models.UserError;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /***
  * Class assists API controller in handling the storage system so it does not need to interact with it directly
- * This class handles Pagination and autofill logic
+ * This class handles Pagination, autofill logic and error handling
  */
 public class MobileFoodPermitStorageHandler {
 
@@ -49,7 +51,7 @@ public class MobileFoodPermitStorageHandler {
      * @return permit with the location id specified
      */
     public MobileFoodPermit getMobileFoodPermitByLocationId(String locationId) {
-        return storage.getByLocationId(locationId);
+             return storage.getByLocationId(locationId);
     }
 
     /***
@@ -73,6 +75,7 @@ public class MobileFoodPermitStorageHandler {
     public List<MobileFoodPermit> getPage(int pageNumber, int pageSize) {
         int startIndex = pageNumber * pageSize;
         // to do  array index out of bounds check
+
         return storage.getAllPermits().subList(startIndex, startIndex + pageSize);
     }
 
@@ -90,11 +93,13 @@ public class MobileFoodPermitStorageHandler {
         List<MobileFoodPermit> autoFillOptions = new ArrayList<>();
 
         for (MobileFoodPermit permit : storage.getAllPermits()) {
-            if (permit.getApplicant().startsWith(name)) {
-                autoFillOptions.add(permit);
-            }
-            if (autoFillOptions.size() == this.autofillOptionsSize) {
-                return autoFillOptions;
+            if(permit.getApplicant() != null) {
+                if (permit.getApplicant().startsWith(name)) {
+                    autoFillOptions.add(permit);
+                }
+                if (autoFillOptions.size() == this.autofillOptionsSize) {
+                    return autoFillOptions;
+                }
             }
         }
         return autoFillOptions;

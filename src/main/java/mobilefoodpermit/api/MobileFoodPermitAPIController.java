@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mobilefoodpermit.models.MobileFoodPermit;
 import mobilefoodpermit.models.UserError;
-import mobilefoodpermit.storage.MobileFoodPermitStorage;
 import mobilefoodpermit.storage.MobileFoodPermitStorageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ public class MobileFoodPermitAPIController {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     private final MobileFoodPermitStorageHandler storageHandler;
+
     @Autowired
     public MobileFoodPermitAPIController(MobileFoodPermitStorageHandler storageHandler) {
         this.storageHandler = storageHandler;
@@ -69,9 +69,12 @@ public class MobileFoodPermitAPIController {
      * @throws UnsupportedEncodingException
      */
     @RequestMapping("/getbylocationid")
-    public String mobileFoodPermitByLocationId(@RequestParam String locationId) throws JsonProcessingException, UnsupportedEncodingException {
-
+    public String mobileFoodPermitByLocationId(@RequestParam String locationId) throws JsonProcessingException {
+    try{
         return OBJECT_MAPPER.writeValueAsString(storageHandler.getMobileFoodPermitByLocationId(locationId));
+    } catch (Exception e) {
+        return OBJECT_MAPPER.writeValueAsString(new UserError("Location Id has no associated permit"));
+    }
     }
 
     /***
@@ -82,7 +85,7 @@ public class MobileFoodPermitAPIController {
      * @throws UnsupportedEncodingException
      */
     @RequestMapping("/getbyname")
-    public String mobileFoodPermitByName(@RequestParam String name) throws JsonProcessingException, UnsupportedEncodingException {
+    public String mobileFoodPermitByName(@RequestParam String name) throws JsonProcessingException {
 
         return OBJECT_MAPPER.writeValueAsString(storageHandler.getByName(name));
     }
@@ -96,7 +99,7 @@ public class MobileFoodPermitAPIController {
      * @throws UnsupportedEncodingException
      */
     @RequestMapping("/getbynamestartswith")
-    public String mobileFoodPermitByNameStartsWith(@RequestParam String name) throws JsonProcessingException, UnsupportedEncodingException {
+    public String mobileFoodPermitByNameStartsWith(@RequestParam String name) throws JsonProcessingException {
 
         return OBJECT_MAPPER.writeValueAsString(storageHandler.getByNameStartingWith(name));
     }
@@ -111,7 +114,8 @@ public class MobileFoodPermitAPIController {
      * @throws UnsupportedEncodingException
      */
     @RequestMapping("/getbyradius")
-    public String mobileFoodPermitByRadius(@RequestParam double X, @RequestParam double Y, @RequestParam double radius) throws JsonProcessingException {
+    public String mobileFoodPermitByRadius(@RequestParam double X, @RequestParam double Y,
+                                           @RequestParam double radius) throws JsonProcessingException {
 
         try {
             return OBJECT_MAPPER.writeValueAsString(Optional.of(storageHandler.getByRadius(X, Y, radius)));

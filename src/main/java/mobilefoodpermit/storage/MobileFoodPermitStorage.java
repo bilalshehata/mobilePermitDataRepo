@@ -28,6 +28,8 @@ public class MobileFoodPermitStorage implements KdTreeStorage<MobileFoodPermit> 
 
     /**
      * insert a permit into memory
+     * This method runs syncronised as the underlying data structure implementation
+     * does not support multiple concurrent writes.
      *
      * @param permit
      * @return
