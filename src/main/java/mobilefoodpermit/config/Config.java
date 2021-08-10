@@ -1,4 +1,4 @@
-package mobileFoodPermit.config;
+package mobilefoodpermit.config;
 
 import org.springframework.context.annotation.Configuration;
 

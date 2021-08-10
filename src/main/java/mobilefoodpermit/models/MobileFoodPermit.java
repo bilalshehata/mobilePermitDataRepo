@@ -1,19 +1,20 @@
-package mobileFoodPermit.models;
+package mobilefoodpermit.models;
 
-import mobileFoodPermit.gps.GPSLocation;
+import mobilefoodpermit.gps.GPSLocation;
+import mobilefoodpermit.gps.Locatable;
 
 import javax.validation.constraints.NotNull;
 
-public class MobileFoodPermit {
+public class MobileFoodPermit implements Locatable {
     @NotNull
-    String locationId;
+    private String locationId;
 
-    String applicant;
+    private String applicant;
 
-    String facilityType;
-    String status;
-    double latitude;
-    double longitude;
+    private String facilityType;
+    private String status;
+    private double latitude;
+    private double longitude;
 
 
     public String getFacilityType() {
@@ -40,8 +41,8 @@ public class MobileFoodPermit {
         return applicant;
     }
 
-    public GPSLocation getGpsLocation(){
-        return new GPSLocation(this.latitude,this.longitude);
+    public GPSLocation createGPSLocation() {
+        return new GPSLocation(this.latitude, this.longitude);
     }
 
 }
