@@ -4,21 +4,31 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mobilefoodpermit.MobileFoodPermitStorage;
-import mobilefoodpermit.MobileFoodPermitStorageController;
 import mobilefoodpermit.models.MobileFoodPermit;
+import mobilefoodpermit.models.UserError;
+import mobilefoodpermit.storage.MobileFoodPermitStorage;
+import mobilefoodpermit.storage.MobileFoodPermitStorageHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 @RestController
 public class MobileFoodPermitAPIController {
 
-    public final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    ;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    private final MobileFoodPermitStorageHandler storageHandler;
+    @Autowired
+    public MobileFoodPermitAPIController(MobileFoodPermitStorageHandler storageHandler) {
+        this.storageHandler = storageHandler;
+    }
 
+    private static String getErrorWithMessage() throws JsonProcessingException {
+        return OBJECT_MAPPER.writeValueAsString(new UserError("Unknown Error occurred"));
+    }
 
     @RequestMapping("/")
     public String index() {
@@ -33,11 +43,12 @@ public class MobileFoodPermitAPIController {
     @RequestMapping("/get-all")
     public String getAllPermits() throws JsonProcessingException {
 
-        return OBJECT_MAPPER.writeValueAsString(MobileFoodPermitStorage.getAllPermits());
+        return OBJECT_MAPPER.writeValueAsString(storageHandler.getAllPermits());
     }
 
     /**
      * Scalable version of get all mobile permits that allows for pagination dependant on the clients requirements
+     *
      * @param pageNumber
      * @param pagesSize
      * @return
@@ -46,11 +57,12 @@ public class MobileFoodPermitAPIController {
     @RequestMapping("/get-all-paginated")
     public String pagedGetAllPermits(@RequestParam int pageNumber, @RequestParam int pagesSize) throws JsonProcessingException {
 
-        return OBJECT_MAPPER.writeValueAsString(MobileFoodPermitStorageController.getAllPaged(pageNumber,pagesSize));
+        return OBJECT_MAPPER.writeValueAsString(storageHandler.getPage(pageNumber, pagesSize));
     }
 
     /**
      * given a location ID return the Mobile Food Permit
+     *
      * @param locationId
      * @return
      * @throws JsonProcessingException
@@ -59,9 +71,8 @@ public class MobileFoodPermitAPIController {
     @RequestMapping("/getbylocationid")
     public String mobileFoodPermitByLocationId(@RequestParam String locationId) throws JsonProcessingException, UnsupportedEncodingException {
 
-        return OBJECT_MAPPER.writeValueAsString(MobileFoodPermitStorage.getByLocationId(locationId));
+        return OBJECT_MAPPER.writeValueAsString(storageHandler.getMobileFoodPermitByLocationId(locationId));
     }
-
 
     /***
      * Given an application name, retrieve mobile food permit
@@ -73,12 +84,12 @@ public class MobileFoodPermitAPIController {
     @RequestMapping("/getbyname")
     public String mobileFoodPermitByName(@RequestParam String name) throws JsonProcessingException, UnsupportedEncodingException {
 
-        return OBJECT_MAPPER.writeValueAsString(MobileFoodPermitStorageController.getByName(name));
+        return OBJECT_MAPPER.writeValueAsString(storageHandler.getByName(name));
     }
-
 
     /**
      * Function is used for autocomplete, It will retrieve
+     *
      * @param name
      * @return
      * @throws JsonProcessingException
@@ -87,20 +98,37 @@ public class MobileFoodPermitAPIController {
     @RequestMapping("/getbynamestartswith")
     public String mobileFoodPermitByNameStartsWith(@RequestParam String name) throws JsonProcessingException, UnsupportedEncodingException {
 
-        return OBJECT_MAPPER.writeValueAsString(MobileFoodPermitStorageController.getByNameStartingWith(name));
+        return OBJECT_MAPPER.writeValueAsString(storageHandler.getByNameStartingWith(name));
     }
 
+    /***
+     * permits within radius function
+     * @param X x coordinate
+     * @param Y y coordinate
+     * @param radius  in meters
+     * @return back all permits that are within the bounding circle.
+     * @throws JsonProcessingException
+     * @throws UnsupportedEncodingException
+     */
     @RequestMapping("/getbyradius")
-    public String mobileFoodPermitByRadius(@RequestParam double latitude, @RequestParam double longitude, @RequestParam double radius) throws JsonProcessingException, UnsupportedEncodingException {
+    public String mobileFoodPermitByRadius(@RequestParam double X, @RequestParam double Y, @RequestParam double radius) throws JsonProcessingException {
 
-        return OBJECT_MAPPER.writeValueAsString(MobileFoodPermitStorageController.getByRadius(latitude, longitude, radius));
+        try {
+            return OBJECT_MAPPER.writeValueAsString(Optional.of(storageHandler.getByRadius(X, Y, radius)));
+        } catch (Exception e) {
+            return getErrorWithMessage();
+        }
     }
 
-
+    /***
+     * function creates permits
+     * @param mobileFoodPermit
+     * @return HTTP status
+     */
     @PostMapping("/create")
     public ResponseEntity create(@Valid @RequestBody MobileFoodPermit mobileFoodPermit) {
         // make sure to check whether the new person does not already exist
-        return ResponseEntity.ok(MobileFoodPermitStorageController.addMobileFoodPermit(mobileFoodPermit));
+        return ResponseEntity.ok(storageHandler.addMobileFoodPermit(mobileFoodPermit));
     }
 
 
