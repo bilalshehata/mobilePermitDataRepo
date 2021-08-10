@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class Application {
 
     public static void main(String[] args) throws IOException {
-        MobileFoodPermitStorage storage = new MobileFoodPermitStorage();
+        MobileFoodPermitStorageController storage = new MobileFoodPermitStorageController();
 
         ApplicationContext ctx = SpringApplication.run(Application.class, args);
 

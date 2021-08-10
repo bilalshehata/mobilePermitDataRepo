@@ -7,6 +7,7 @@ public class GPSLocation {
     private double latitude;
     private double longitude;
 
+
     public GPSLocation(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -25,6 +26,8 @@ public class GPSLocation {
         geodeticCalculator.setDestinationGeographicPoint(locationB.longitude, locationB.latitude);
         return geodeticCalculator.getOrthodromicDistance();
     }
+
+
 
     public static Boolean isPointsWithinRadius(GPSLocation locationA, GPSLocation locationB, double radius) {
         return distanceBetweenTwoPoints(locationA, locationB) < radius;

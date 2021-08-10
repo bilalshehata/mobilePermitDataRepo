@@ -8,13 +8,13 @@ import javax.validation.constraints.NotNull;
 public class MobileFoodPermit implements Locatable {
     @NotNull
     private String locationId;
-
     private String applicant;
-
     private String facilityType;
     private String status;
     private double latitude;
     private double longitude;
+    private double X;
+    private double Y;
 
 
     public String getFacilityType() {
@@ -24,6 +24,14 @@ public class MobileFoodPermit implements Locatable {
     public String getStatus() {
         return status;
     }
+    public double getX() {
+        return X;
+    }
+
+    public double getY() {
+        return Y;
+    }
+
 
     public double getLatitude() {
         return latitude;

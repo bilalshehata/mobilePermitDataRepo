@@ -1,97 +1,79 @@
 package mobilefoodpermit;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import mobilefoodpermit.gps.GPSLocation;
 import mobilefoodpermit.models.MobileFoodPermit;
-
-import org.geotools.data.shapefile.index.quadtree.QuadTree;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.index.kdtree.KdNode;
 import org.locationtech.jts.index.kdtree.KdTree;
-import org.locationtech.jts.index.quadtree.Quadtree;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class MobileFoodPermitStorage  {
-    final static Integer AUTOFILL_OPTIONS_LENGTH = 5;
-    //concurrent hash table to support multiple writes, in memory data storage until database is implemented.
-    //locationID uniquely identifies each row therefore it will be used as a key.
-    private static ConcurrentHashMap<String, MobileFoodPermit> storage;
-    public static KdTree tree;
-    //location of CSV to load in data
-    MobileFoodPermitStorage() throws IOException {
-        tree = new KdTree();
-        this.initialiseStorage();
+public class MobileFoodPermitStorage {
+    //Tree storage system is optimised towards range queries  for spatial data.
+    private static KdTree treeStorage;
 
-
-
-        StorageInitialiser.readInCSV(storage);
+    public MobileFoodPermitStorage() {
+        treeStorage = new KdTree();
     }
 
-    public static ConcurrentHashMap<String, MobileFoodPermit> getStorage() {
-        return storage;
+    public static MobileFoodPermit insert(MobileFoodPermit permit) {
+        KdNode node = getNodeFromPermit(permit);
+        if (node != null) {
+
+            List<MobileFoodPermit> nodeData = (List<MobileFoodPermit>) node.getData();
+            nodeData.add(permit);
+        }
+        if (node == null) {
+
+            List newList = new ArrayList<>();
+            newList.add(permit);
+            MobileFoodPermitStorage.treeStorage.insert(new Coordinate(permit.getX(), permit.getY()), newList);
+        }
+        return permit;
+    }
+
+    private static KdNode getNodeFromPermit(MobileFoodPermit permit) {
+        return MobileFoodPermitStorage.treeStorage.query(new Coordinate(permit.getX(), permit.getY()));
+    }
+
+    private static List<KdNode> getAllNodes() {
+        Envelope env = new Envelope(new Coordinate(0, 0));
+        env.expandBy(99999999);
+        List<KdNode> allNodes = MobileFoodPermitStorage.treeStorage.query(env);
+        return allNodes;
+    }
+
+    public static List<MobileFoodPermit> getAllPermits() {
+        return permitsFromNodes(getAllNodes());
     }
 
     public static MobileFoodPermit getByLocationId(String locationId) {
-        return storage.get(locationId);
+        return getAllPermits().stream()
+                .filter(x -> x.getLocationId().equals(locationId))
+                .collect(Collectors.toList()).get(0);
     }
 
-    public static MobileFoodPermit addMobileFoodPermit(MobileFoodPermit mobileFoodPermit) {
-        return storage.put(mobileFoodPermit.getLocationId(), mobileFoodPermit);
+
+    public static List<MobileFoodPermit> getByRadius(Coordinate center, double radius) {
+        Envelope env = new Envelope(new Coordinate(center));
+        env.expandBy(radius);
+        List<KdNode> nodesInRadius = MobileFoodPermitStorage.treeStorage.query(env);
+        return permitsFromNodes(nodesInRadius);
+
     }
 
-
-    public static List<MobileFoodPermit> getByName(String applicantName) {
-        return storage.values().stream().filter(x -> x.getApplicant().equals(applicantName)).collect(Collectors.toList());
-    }
-
-    public static List<MobileFoodPermit> getAllPaged(int pageNumber, int pageSize) {
-        AtomicInteger index = new AtomicInteger(0);
-        List<List<MobileFoodPermit>> chunkedMobileFoodPermits =  storage.values().stream().collect(Collectors.groupingBy(x -> index.getAndIncrement() / pageSize))
-                .entrySet().stream()
-                .map(Map.Entry::getValue).collect(Collectors.toList());
-        return chunkedMobileFoodPermits.get(pageNumber);
-    }
-
-    public static List<MobileFoodPermit> getByRadius(double latitude, double longitude, double radius) {
-        GPSLocation origin = new GPSLocation(latitude, longitude);
-        return storage.values().stream().filter(x -> GPSLocation.isPointsWithinRadius(origin, x.createGPSLocation(), radius)).collect(Collectors.toList());
-    }
-
-    public static List<MobileFoodPermit> getByNameStartingWith(String name) {
-
-        List<MobileFoodPermit> autoFillOptions = new ArrayList<>();
-
-        for (MobileFoodPermit permit : storage.values()) {
-            if (permit.getApplicant().startsWith(name)) {
-                autoFillOptions.add(permit);
+    private static List<MobileFoodPermit> permitsFromNodes(List<KdNode> nodes){
+        ArrayList<MobileFoodPermit> AllPermits = new ArrayList<>();
+        nodes.forEach(x -> {
+            if ((List<MobileFoodPermit>) x.getData() != null) {
+                AllPermits.addAll((List<MobileFoodPermit>) x.getData());
             }
-            if (autoFillOptions.size() == AUTOFILL_OPTIONS_LENGTH) {
-                return autoFillOptions;
-            }
-        }
-        return autoFillOptions;
+        });
+
+        return AllPermits;
     }
 
-
-    private void initialiseStorage(){
-        storage  = new ConcurrentHashMap<>();
-    }
 
 }
-
