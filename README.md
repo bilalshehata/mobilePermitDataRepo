@@ -39,6 +39,22 @@ To return all permits with applications starting with the name provided, fronten
     params: name (or part of)
     response: returns all application names starting with the name provided
 
+Add a new permit to memory
+
+    POST /create
+    body {
+     String locationId (mandatory) 
+     String applicant 
+     String facilityType 
+     String status 
+     double latitude 
+     double longitude
+     double X
+     double Y
+    }
+   
+
+
 
 
 ## The Data
