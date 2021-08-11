@@ -46,7 +46,7 @@ the data used for this requirement can be found at
 Mobile Food Facility Permits including name of vendor, location, type of food sold and status of permit.
 https://data.sfgov.org/Economy-and-Community/Mobile-Food-Permit-Map/px6q-wjh5
 
-#Implementation
+# Implementation
 
 ## Design
 Based on the requirements the design should be optmised to handle spatial range queries.
