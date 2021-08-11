@@ -58,9 +58,11 @@ Add a new permit to memory
 
 
 ## The Data
-the data used for this requirement can be found at
+the data used for this requirement can be found at https://data.sfgov.org/Economy-and-Community/Mobile-Food-Permit-Map/px6q-wjh5
 Mobile Food Facility Permits including name of vendor, location, type of food sold and status of permit.
-https://data.sfgov.org/Economy-and-Community/Mobile-Food-Permit-Map/px6q-wjh5
+The data in this instance is inherently spatial with each permit being placed at a specific X,Y coordinate.
+
+
 
 # Implementation
 
