@@ -71,8 +71,8 @@ Based on the requirements the design should be optmised to handle spatial range 
 This implementation will store the data in memory rather than creating a new DB. The code is flexible such that a database could be added at a later stage.
 
 ### Storage Structure
-Although a hashmap will allow us to store and get these points at O(1) time complexity it wont be able to perform range queries as there is no inherent ordering. 
-To store the data we have opted to implement this using a KdTree instead. The benefit of adopting this datastructure is that it is optimised to handle Spatial range queries as instead of needing to compare each node to each other node O(n^2) this datastructure allows for this sort of comparison to occur at O(logn).
+Although a hashmap will allow us to store and get these points at O(1) time complexity it won't be able to perform range queries as there is no inherent ordering. 
+To store the data we have opted to implement this using a Kd-Tree instead. The benefit of adopting this datastructure is that it is optimised to handle spatial range queries as instead of needing to compare each node to each other node O(n^2) this datastructure allows for this sort of comparison to occur at O(logn).
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/740px-Kdtree_2d.svg.png"/>
 
 # Running
