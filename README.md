@@ -17,7 +17,7 @@ main endpoints
 
 To return all permits
 
-    GET /get
+    GET /getall
     response: All permits in memory
 
 To return all permits by page, this method is better for scalability 
