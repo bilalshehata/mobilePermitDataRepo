@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +41,7 @@ public class MobileFoodPermitAPIController {
      * @return
      * @throws JsonProcessingException
      */
-    @RequestMapping("/get-all")
+    @RequestMapping("/getall")
     public String getAllPermits() throws JsonProcessingException {
 
         return OBJECT_MAPPER.writeValueAsString(storageHandler.getAllPermits());
@@ -54,10 +55,14 @@ public class MobileFoodPermitAPIController {
      * @return
      * @throws JsonProcessingException
      */
-    @RequestMapping("/get-all-paginated")
+    @RequestMapping("/getallpaginated")
     public String pagedGetAllPermits(@RequestParam int pageNumber, @RequestParam int pagesSize) throws JsonProcessingException {
-
-        return OBJECT_MAPPER.writeValueAsString(storageHandler.getPage(pageNumber, pagesSize));
+        List<MobileFoodPermit> page = storageHandler.getPage(pageNumber, pagesSize);
+        if(page == null) {
+           return  OBJECT_MAPPER.writeValueAsString(new UserError("Invalid Page"));
+        }else {
+            return OBJECT_MAPPER.writeValueAsString(storageHandler.getPage(pageNumber, pagesSize));
+        }
     }
 
     /**

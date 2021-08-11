@@ -1,12 +1,10 @@
 package mobilefoodpermit.storage;
 
 import mobilefoodpermit.models.MobileFoodPermit;
-import mobilefoodpermit.models.UserError;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /***
@@ -39,6 +37,7 @@ public class MobileFoodPermitStorageHandler {
 
     /**
      * Get all permits in memory
+     *
      * @return
      */
     public List<MobileFoodPermit> getAllPermits() {
@@ -46,12 +45,13 @@ public class MobileFoodPermitStorageHandler {
     }
 
     /**
-     *  get a permit by its location id
+     * get a permit by its location id
+     *
      * @param locationId
      * @return permit with the location id specified
      */
     public MobileFoodPermit getMobileFoodPermitByLocationId(String locationId) {
-             return storage.getByLocationId(locationId);
+        return storage.getByLocationId(locationId);
     }
 
     /***
@@ -74,9 +74,14 @@ public class MobileFoodPermitStorageHandler {
      */
     public List<MobileFoodPermit> getPage(int pageNumber, int pageSize) {
         int startIndex = pageNumber * pageSize;
-        // to do  array index out of bounds check
 
-        return storage.getAllPermits().subList(startIndex, startIndex + pageSize);
+        // to do  array index out of bounds check
+        try {
+            return storage.getAllPermits().subList(startIndex, startIndex + pageSize);
+        } catch (Exception e) {
+            //to return a proper error messag in APIController
+            return null;
+        }
     }
 
     public List<MobileFoodPermit> getByRadius(double latitude, double longitude, double radius) {
@@ -93,7 +98,7 @@ public class MobileFoodPermitStorageHandler {
         List<MobileFoodPermit> autoFillOptions = new ArrayList<>();
 
         for (MobileFoodPermit permit : storage.getAllPermits()) {
-            if(permit.getApplicant() != null) {
+            if (permit.getApplicant() != null) {
                 if (permit.getApplicant().startsWith(name)) {
                     autoFillOptions.add(permit);
                 }
