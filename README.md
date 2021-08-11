@@ -63,7 +63,7 @@ In the directory please run in the following order to bring up a docker containe
     gradle clean build 
     docker build .
     docker-compose up
-
+this will run on port 8080 by default
 # Testing
 ## With Curl
 Check status
