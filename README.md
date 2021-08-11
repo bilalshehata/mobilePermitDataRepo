@@ -43,14 +43,14 @@ Add a new permit to memory
 
     POST /create
     body {
-     String locationId (mandatory) 
-     String applicant 
-     String facilityType 
-     String status 
-     double latitude 
-     double longitude
-     double X
-     double Y
+      locationId (mandatory) 
+      applicant,
+      facilityType,
+      status, 
+      latitude, 
+      longitude,
+      X,
+      Y 
     }
    
 
