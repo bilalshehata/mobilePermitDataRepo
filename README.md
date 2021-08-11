@@ -42,16 +42,15 @@ To return all permits with applications starting with the name provided, fronten
 Add a new permit to memory
 
     POST /create
-    body {
-      locationId (mandatory) 
+    body : { locationId (mandatory),
       applicant,
       facilityType,
       status, 
       latitude, 
       longitude,
       X,
-      Y 
-    }
+      Y } 
+
    
 
 
