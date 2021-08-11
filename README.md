@@ -8,8 +8,8 @@ Create a backend service that provides access to all mobile food permits.
 The API should support the following frontend use cases.
 - Geo queries by GPS location and radius
 - Autocomplete by name and/or other relevant dimensions
-## The Api
-Once deployed, full api specification is available at
+## The API
+Once deployed, full API specification is available at
 http://localhost:8080/swagger-ui.html
 the endpoint will use JSON objects to communicate data between backend and frontend servers.
 A high level overview is provided below: 
