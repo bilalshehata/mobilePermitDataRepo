@@ -14,8 +14,8 @@ public class MobileFoodPermitStorageTest {
         MobileFoodPermitStorage testStorage = new MobileFoodPermitStorage();
         MobileFoodPermit testPermit = new MobileFoodPermit();
         testPermit.setLocationId("location1");
-        testPermit.setX(1.0);
-        testPermit.setY(1.0);
+        testPermit.setLatitude(1.0);
+        testPermit.setLongitude(1.0);
         testStorage.insert(testPermit);
         return testStorage;
     }
@@ -25,8 +25,8 @@ public class MobileFoodPermitStorageTest {
         MobileFoodPermitStorage testStorage = new MobileFoodPermitStorage();
         MobileFoodPermit testPermit = new MobileFoodPermit();
         testPermit.setLocationId("location1");
-        testPermit.setX(1.0);
-        testPermit.setY(1.0);
+        testPermit.setLatitude(1.0);
+        testPermit.setLongitude(1.0);
         testStorage.insert(testPermit);
         Assert.assertNotNull(testStorage.getByLocationId(testPermit.getLocationId()));
     }

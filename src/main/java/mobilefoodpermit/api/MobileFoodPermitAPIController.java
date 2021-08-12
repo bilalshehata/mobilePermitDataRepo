@@ -9,9 +9,9 @@ import mobilefoodpermit.models.UserError;
 import mobilefoodpermit.storage.MobileFoodPermitStorageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
@@ -58,9 +58,9 @@ public class MobileFoodPermitAPIController {
     @RequestMapping("/getallpaginated")
     public String pagedGetAllPermits(@RequestParam int pageNumber, @RequestParam int pagesSize) throws JsonProcessingException {
         List<MobileFoodPermit> page = storageHandler.getPage(pageNumber, pagesSize);
-        if(page == null) {
-           return  OBJECT_MAPPER.writeValueAsString(new UserError("Invalid Page"));
-        }else {
+        if (page == null) {
+            return OBJECT_MAPPER.writeValueAsString(new UserError("Invalid Page"));
+        } else {
             return OBJECT_MAPPER.writeValueAsString(storageHandler.getPage(pageNumber, pagesSize));
         }
     }
@@ -75,11 +75,11 @@ public class MobileFoodPermitAPIController {
      */
     @RequestMapping("/getbylocationid")
     public String mobileFoodPermitByLocationId(@RequestParam String locationId) throws JsonProcessingException {
-    try{
-        return OBJECT_MAPPER.writeValueAsString(storageHandler.getMobileFoodPermitByLocationId(locationId));
-    } catch (Exception e) {
-        return OBJECT_MAPPER.writeValueAsString(new UserError("Location Id has no associated permit"));
-    }
+        try {
+            return OBJECT_MAPPER.writeValueAsString(storageHandler.getMobileFoodPermitByLocationId(locationId));
+        } catch (Exception e) {
+            return OBJECT_MAPPER.writeValueAsString(new UserError("Location Id has no associated permit"));
+        }
     }
 
     /***
@@ -111,19 +111,19 @@ public class MobileFoodPermitAPIController {
 
     /***
      * permits within radius function
-     * @param X x coordinate
-     * @param Y y coordinate
+     * @param latitude coordinate
+     * @param longitude coordinate
      * @param radius  in meters
      * @return back all permits that are within the bounding circle.
      * @throws JsonProcessingException
      * @throws UnsupportedEncodingException
      */
     @RequestMapping("/getbyradius")
-    public String mobileFoodPermitByRadius(@RequestParam double X, @RequestParam double Y,
+    public String mobileFoodPermitByRadius(@RequestParam double latitude, @RequestParam double longitude,
                                            @RequestParam double radius) throws JsonProcessingException {
 
         try {
-            return OBJECT_MAPPER.writeValueAsString(Optional.of(storageHandler.getByRadius(X, Y, radius)));
+            return OBJECT_MAPPER.writeValueAsString(Optional.of(storageHandler.getByRadius(latitude, longitude, radius)));
         } catch (Exception e) {
             return getErrorWithMessage();
         }
@@ -135,7 +135,7 @@ public class MobileFoodPermitAPIController {
      * @return HTTP status
      */
     @PostMapping("/create")
-    public ResponseEntity create(@Valid @RequestBody MobileFoodPermit mobileFoodPermit) {
+    public ResponseEntity create(@Validated @RequestBody MobileFoodPermit mobileFoodPermit) {
         // make sure to check whether the new person does not already exist
         return ResponseEntity.ok(storageHandler.addMobileFoodPermit(mobileFoodPermit));
     }

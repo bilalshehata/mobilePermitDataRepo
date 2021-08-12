@@ -1,17 +1,21 @@
 package mobilefoodpermit.models;
 
-import javax.validation.constraints.NotNull;
+
+import org.springframework.lang.NonNull;
 
 public class MobileFoodPermit {
-    @NotNull
+    @NonNull
     private String locationId;
     private String applicant;
     private String facilityType;
     private String status;
+    @NonNull
     private double latitude;
+    @NonNull
     private double longitude;
-    private double X;
-    private double Y;
+
+
+    public MobileFoodPermit(){}
 
     public String getFacilityType() {
         return facilityType;
@@ -27,22 +31,6 @@ public class MobileFoodPermit {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public double getX() {
-        return X;
-    }
-
-    public void setX(double x) {
-        X = x;
-    }
-
-    public double getY() {
-        return Y;
-    }
-
-    public void setY(double y) {
-        Y = y;
     }
 
     public double getLatitude() {

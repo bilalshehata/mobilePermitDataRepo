@@ -1,7 +1,8 @@
 package mobilefoodpermit.storage;
 
+
+import mobilefoodpermit.geotool.ProjectedCoordinateFactory;
 import mobilefoodpermit.models.MobileFoodPermit;
-import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class MobileFoodPermitStorageHandler {
 
     //autofill option size set in applications.properties
     private final Integer autofillOptionsSize;
+
 
     //location of CSV to load in data
     public MobileFoodPermitStorageHandler(MobileFoodPermitStorage storage,
@@ -85,7 +87,7 @@ public class MobileFoodPermitStorageHandler {
     }
 
     public List<MobileFoodPermit> getByRadius(double latitude, double longitude, double radius) {
-        return storage.getByRadius(new Coordinate(latitude, longitude), radius);
+        return storage.getByRadius(ProjectedCoordinateFactory.createProjectedCoordinate(latitude, longitude), radius);
     }
 
     /***

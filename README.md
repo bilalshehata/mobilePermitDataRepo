@@ -64,17 +64,25 @@ Mobile Food Facility Permits including name of vendor, location, type of food so
 The data in this instance is inherently spatial with each permit being placed at a specific X,Y coordinate.
 
 
-
 # Implementation
 
 ## Design
-Based on the requirements the design should be optmised to handle spatial range queries.
+Based on the requirements the design should be optimised to handle spatial range queries.
 This implementation will store the data in memory rather than creating a new DB. The code is flexible such that a database could be added at a later stage.
+
 
 ### Storage Structure
 Although a hashmap will allow us to store and get these points at O(1) time complexity it won't be able to perform range queries as there is no inherent ordering. 
 To store the data we have opted to implement this using a Kd-Tree instead. The benefit of adopting this datastructure is that it is optimised to handle spatial range queries as instead of needing to compare each node to each other node O(n^2) this datastructure allows for this sort of comparison to occur at O(logn).
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/740px-Kdtree_2d.svg.png"/>
+
+### Coordinate System Considerations
+The data in the dataset is stored in latitude and longitude values which provides coordinates in degrees.
+However, this does not lend itself to distance / area calculations as the radius of the earth needs to be taken into consideration.
+For this reason we have projected the long lat values onto a TD plane using UTM (Universal Transverse Mercator).
+This projected value will act as our key for the Kd-Tree therefore providing the ability to perform range queries more easily.
+
+For further readings regarding  check out this [link](usgs.gov/faqs/how-are-utm-coordinates-measured-usgs-topographic-maps?qt-news_science_products=0#qt-news_science_products).
 
 # Running
 In the directory please run in the following order to bring up a docker container running the program.

@@ -1,5 +1,6 @@
 package mobilefoodpermit.storage;
 
+import mobilefoodpermit.geotool.ProjectedCoordinateFactory;
 import mobilefoodpermit.models.MobileFoodPermit;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -46,7 +47,7 @@ public class MobileFoodPermitStorage implements KdTreeStorage<MobileFoodPermit> 
         if (node == null) {
             List newList = new ArrayList<>();
             newList.add(permit);
-            treeStorage.insert(new Coordinate(permit.getX(), permit.getY()), newList);
+            treeStorage.insert(ProjectedCoordinateFactory.createProjectedCoordinate(permit.getLatitude(), permit.getLongitude()), newList);
         }
         return permit;
     }
@@ -58,8 +59,13 @@ public class MobileFoodPermitStorage implements KdTreeStorage<MobileFoodPermit> 
      * @return
      */
     private KdNode getNodeFromPermit(MobileFoodPermit permit) {
-        return treeStorage.query(new Coordinate(permit.getX(), permit.getY()));
+        Envelope permitEnvelope = new Envelope(new Coordinate(permit.getLatitude(), permit.getLongitude()));
+        // Unfortunatly this library uses Object type and is not generic so we will have to typecast here.
+        return (KdNode) treeStorage.query(permitEnvelope).stream()
+                .findFirst()
+                .orElse(null);
     }
+
 
     /**
      * @return all nodes in the tree
