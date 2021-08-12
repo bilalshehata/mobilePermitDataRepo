@@ -29,5 +29,14 @@ public class ProjectedCoordinateFactoryTest {
 
     }
 
+    @Test
+    public void createProjectedCoordinate_ZeroCoordinate_shouldBeZero() {
+        Coordinate knownProjection = new Coordinate(0,0);
+        Coordinate testCoordinate = ProjectedCoordinateFactory.createProjectedCoordinate(0,0);
+        Assert.assertEquals(knownProjection.getY(),testCoordinate.getY(),0.1);
+
+    }
+
+
 
 }
