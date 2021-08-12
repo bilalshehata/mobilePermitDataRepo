@@ -19,7 +19,7 @@ public class ProjectedCoordinateFactory {
         try {
             // World Geodetic System  (latitude longitude in degrees)
             crsSource = CRS.decode("EPSG:4326");
-            // UTM coordinate system (Universal Transverse Mercator)
+            // WGS 84 / Pseudo-Mercator coordinate system
             crsTarget = CRS.decode("EPSG:3857");
         } catch (FactoryException e) {
             e.printStackTrace();
@@ -35,6 +35,7 @@ public class ProjectedCoordinateFactory {
      */
     public static Coordinate createProjectedCoordinate(double latitude, double longitude) {
         Coordinate coordinateToProject = new Coordinate(latitude, longitude);
+
         try {
             MathTransform transform = CRS.findMathTransform(crsSource, crsTarget, false);
             //function to perform an in-place transformation of the coordinate.

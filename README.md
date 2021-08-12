@@ -77,7 +77,7 @@ To store the data we have opted to implement this using a Kd-Tree instead. The b
 ### Coordinate System Considerations
 The data in the dataset is stored in latitude and longitude values which provides coordinates in degrees.
 However, this does not lend itself to distance / area calculations as the radius of the earth needs to be taken into consideration.
-For this reason we have projected the long lat values onto a TD plane using UTM (Universal Transverse Mercator).
+For this reason we have projected the long lat values onto a 2D plane using WGS 84 / Pseudo-Mercator https://epsg.io/3857.
 This projected value will act as our key for the Kd-Tree therefore providing the ability to perform range queries more easily.
 
 For further readings regarding  check out this [link](usgs.gov/faqs/how-are-utm-coordinates-measured-usgs-topographic-maps?qt-news_science_products=0#qt-news_science_products).
