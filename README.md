@@ -30,7 +30,7 @@ To return all permits by page, this method is better for scalability
 To return all permits within a particular radius of a given point
     
     GET /getbyradius
-    params: coordinates X , Y, radius (meters)
+    params: coordinates latitude , longitude, radius (meters)
     response: All permits within the radius from the coordinate provided.
 
 To return all permits with applications starting with the name provided, frontend to use this for autocomplete. 
@@ -48,9 +48,7 @@ Add a new permit to memory
       facilityType,
       status, 
       latitude, 
-      longitude,
-      X,
-      Y } 
+      longitude} 
     respose: the permit that was stored
 
    
