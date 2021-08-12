@@ -27,16 +27,14 @@ public class ProjectedCoordinateFactory {
     }
 
     /**
-     * function takes a latitude and longitude value and
+     * function takes a latitude and longitude value and return a projected UTM coordinate.
      *
      * @param latitude
      * @param longitude
      * @return X, Y value for a projected coordinate
      */
     public static Coordinate createProjectedCoordinate(double latitude, double longitude) {
-
         Coordinate coordinateToProject = new Coordinate(latitude, longitude);
-
         try {
             MathTransform transform = CRS.findMathTransform(crsSource, crsTarget, false);
             //function to perform an in-place transformation of the coordinate.

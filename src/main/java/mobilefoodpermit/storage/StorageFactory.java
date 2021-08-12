@@ -4,7 +4,9 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import mobilefoodpermit.models.MobileFoodPermit;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 public class StorageFactory {
@@ -15,9 +17,9 @@ public class StorageFactory {
      * @param dataLocation
      * @return
      */
-    public static MobileFoodPermitStorage fromCSV(String dataLocation)  {
+    public static MobileFoodPermitStorage fromCSV(String dataLocation) {
         MobileFoodPermitStorage storage = new MobileFoodPermitStorage();
-        Reader reader = new BufferedReader(new InputStreamReader(StorageFactory.class.getResourceAsStream( dataLocation)));
+        Reader reader = new BufferedReader(new InputStreamReader(StorageFactory.class.getResourceAsStream(dataLocation)));
         CsvToBean csvReader = new CsvToBeanBuilder(reader)
                 .withType(MobileFoodPermit.class)
                 .withSeparator(',')
