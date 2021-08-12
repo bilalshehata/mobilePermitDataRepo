@@ -51,7 +51,7 @@ Add a new permit to memory
       longitude,
       X,
       Y } 
-    respose: the permit that was sent
+    respose: the permit that was stored
 
    
 
