@@ -80,8 +80,6 @@ However, this does not lend itself to distance / area calculations as the radius
 For this reason we have projected the long lat values onto a 2D plane using WGS 84 / Pseudo-Mercator https://epsg.io/3857.
 This projected value will act as our key for the Kd-Tree therefore providing the ability to perform range queries more easily.
 
-For further readings regarding  check out this [link](usgs.gov/faqs/how-are-utm-coordinates-measured-usgs-topographic-maps?qt-news_science_products=0#qt-news_science_products).
-
 # Running
 In the directory please run in the following order to bring up a docker container running the program.
  
